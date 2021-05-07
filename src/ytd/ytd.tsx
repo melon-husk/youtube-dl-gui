@@ -1,6 +1,14 @@
+/* eslint-disable no-console */
 import { exec } from 'child_process';
+import getBinariesDirectoryPath from '../utils/getBinaryPath';
 
-const unixBinPath = './src/ytd/bin/youtube-dl';
+let unixBinPath: string;
+getBinariesDirectoryPath()
+  .then((path) => {
+    unixBinPath = path;
+    return unixBinPath;
+  })
+  .catch((error) => console.log('getBinariesDirectoryPath', error));
 
 type TitleAndThumbnail = {
   title: string;
@@ -9,15 +17,12 @@ type TitleAndThumbnail = {
 
 const downloadDefaultToPath = (path: string, url: string) => {
   return new Promise((resolve, reject) => {
-    const command = `${unixBinPath} ${url} -o '${path}/%(title)s-%(id)s.%(ext)s'`;
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
+    const command = `${unixBinPath}/youtube-dl ${url} -o '${path}/%(title)s-%(id)s.%(ext)s'`;
+    exec(command, (_error, stdout) => {
+      if (stdout === '') {
+        return reject(new Error('Stdout is empty'));
       }
-      if (stderr) {
-        reject(error);
-      }
-      resolve(stdout);
+      return resolve(stdout);
     });
     // spawn('ls').on('message', (message) => resolve(message));
   });
@@ -25,16 +30,14 @@ const downloadDefaultToPath = (path: string, url: string) => {
 
 const getTitleAndThumbnail = (url: string): Promise<TitleAndThumbnail> => {
   return new Promise((resolve, reject) => {
-    const command = `${unixBinPath} ${url} --get-thumbnail --get-title`;
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      }
-      if (stderr) {
-        reject(error);
+    const command = `${unixBinPath}/youtube-dl ${url} --get-thumbnail --get-title`;
+
+    exec(command, (_error, stdout) => {
+      if (stdout === '') {
+        return reject(new Error('Stdout is empty'));
       }
       const temp = stdout.split('\n');
-      resolve({ title: temp[0], thumbnailUrl: temp[1] });
+      return resolve({ title: temp[0], thumbnailUrl: temp[1] });
     });
   });
 };
