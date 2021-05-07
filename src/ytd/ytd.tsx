@@ -2,6 +2,14 @@
 import { exec } from 'child_process';
 import getBinariesDirectoryPath from '../utils/getBinaryPath';
 
+let youtubeDlBin: string;
+
+if (process.platform === 'linux') {
+  youtubeDlBin = '/youtube-dl';
+} else if (process.platform === 'win32') {
+  youtubeDlBin = '\\youtube-dl.exe';
+}
+
 let unixBinPath: string;
 getBinariesDirectoryPath()
   .then((path) => {
@@ -17,10 +25,18 @@ type TitleAndThumbnail = {
 
 const downloadDefaultToPath = (path: string, url: string) => {
   return new Promise((resolve, reject) => {
-    const command = `${unixBinPath}/youtube-dl ${url} -o '${path}/%(title)s-%(id)s.%(ext)s'`;
+    let command = '';
+    const commandLinux = `${unixBinPath}${youtubeDlBin} ${url} -o '${path}/%(title)s-%(id)s.%(ext)s'`;
+    const commandWindows = `${unixBinPath}${youtubeDlBin} ${url} -o "${path}\\%(title)s-%(id)s.%(ext)s"`;
+    if (process.platform === 'linux') {
+      command = commandLinux;
+    } else if (process.platform === 'win32') {
+      command = commandWindows;
+    }
+
     exec(command, (_error, stdout) => {
       if (stdout === '') {
-        return reject(new Error('Stdout is empty'));
+        return reject(new Error(`stdout is empty and command was ${command}`));
       }
       return resolve(stdout);
     });
@@ -30,7 +46,7 @@ const downloadDefaultToPath = (path: string, url: string) => {
 
 const getTitleAndThumbnail = (url: string): Promise<TitleAndThumbnail> => {
   return new Promise((resolve, reject) => {
-    const command = `${unixBinPath}/youtube-dl ${url} --get-thumbnail --get-title`;
+    const command = `${unixBinPath}${youtubeDlBin} ${url} --get-thumbnail --get-title`;
 
     exec(command, (_error, stdout) => {
       if (stdout === '') {
