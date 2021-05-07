@@ -79,7 +79,6 @@ const createWindow = async () => {
   });
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
   mainWindow.webContents.on('did-finish-load', () => {
@@ -125,6 +124,9 @@ ipcMain.on(constants.GET_DIRECTORY_PATH, () => {
       );
     })
     .catch((error) => console.log(error));
+});
+ipcMain.on(constants.GET_APP_PATH, () => {
+  mainWindow?.webContents.send(constants.SEND_APP_PATH, app.getAppPath());
 });
 
 app.on('window-all-closed', () => {
