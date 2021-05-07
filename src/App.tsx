@@ -1,80 +1,109 @@
-import React, { useState } from 'react';
+/* eslint-disable no-console */
 import './App.global.css';
-import ytdl from 'youtube-dl-exec';
-const getResolutionArray = async (url: string) => {
-  let resolutionArray = [];
-  return ytdl(url, {
-    listFormats: true,
-  }).then((output) => (resolutionArray = output.split('\n').slice(3, -1)));
-};
-const getTitleImageUrl = async (url: string) => {
-  return ytdl(url, {
-    getThumbnail: true,
-    getTitle: true,
-  }).then((output: string) => output.split('\n'));
-};
+import React, { useState } from 'react';
+import getFilePath from './GetFilePath/getFilePath';
+import { downloadDefaultToPath, getTitleAndThumbnail } from './ytd/ytd';
 
-function App() {
+// #TODO Extract long Class names
+// #TODO Extract functions into their own files
+// #TODO Download Windows youtube-dl binary and support for it
+// #TODO Implement Download progress bar
+// #TODO Implement choosing resolution
+// #TODO Improve function names
+// #TODO Add tests
+export default function App() {
   const [url, setUrl] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>('./img/hqdefault.webp');
-  const [resolutionArray, setResolutionArray] = useState<string[]>([]);
+  // const [resolutionArray, setResolutionArray] = useState<string[]>([]);
   const [videoTitle, setVideoTitle] = useState<string>('');
+  const [loadingThumbnail, setLoadingThumbnail] = useState<boolean>(false);
   const handleOnUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(event.currentTarget.value);
   };
-
-  const handleOnKeyDown = async (
+  const handleOnURLEnterClick = (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (event.key === 'Enter') {
-      // ytdl(url, {
-      //   getThumbnail: true,
-      //   getTitle: true,
-      // })
-      //   .then((output: string) => {
-      //     const com = output.split('\n');
-      //     setVideoTitle(com[0]);
-      //     setImageUrl(com[1]);
-      //     return true;
-      //   })
-      //   .catch((err) => console.log(err));
-      setResolutionArray(await getResolutionArray(url));
-      const com = await getTitleImageUrl(url);
-      await setVideoTitle(com[0]);
-      await setImageUrl(com[1]);
+      setLoadingThumbnail((prevState) => !prevState);
+      getTitleAndThumbnail(url)
+        .then((obj) => {
+          // console.log(obj);
+          setImageUrl(obj.thumbnailUrl);
+          setVideoTitle(obj.title);
+          setLoadingThumbnail(false);
+          return undefined;
+        })
+        .catch((err) => console.log(err));
     }
   };
+  const handleOnEnterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!url) return;
+    setLoadingThumbnail((prevState) => !prevState);
+    getTitleAndThumbnail(url)
+      .then((obj) => {
+        // console.log(obj);
+        setImageUrl(obj.thumbnailUrl);
+        setVideoTitle(obj.title);
+        setLoadingThumbnail(false);
+        return undefined;
+      })
+      .catch((err) => console.log(err));
+  };
+  const handleOnDownloadClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    if (!url) return;
+    if (loadingThumbnail) return;
+    event.preventDefault();
+    getFilePath()
+      .then((filePaths) => downloadDefaultToPath(filePaths[0], url))
+      .then((output) => console.log(output))
+      .catch((error) => console.log(error));
+  };
+
   return (
     <div className="flex flex-col items-center justify-center w-screen pt-5 ">
-      <input
-        type="text"
-        name="youtubeURL"
-        className="w-3/4 h-8 px-3 py-5 text-xl text-gray-100 placeholder-gray-400 bg-gray-600 border-2 border-gray-600 shadow-md outline-none hover:border-gray-400 focus:border-gray-200 rounded-xl"
-        placeholder="Enter YouTube URL"
-        value={url}
-        onChange={handleOnUrlChange}
-        onKeyDown={handleOnKeyDown}
-      />
+      <div className="flex justify-center w-full mb-5">
+        <input
+          type="text"
+          name="youtubeURL"
+          className="w-3/4 h-8 px-3 py-5 mr-2 text-xl text-gray-100 placeholder-gray-400 bg-gray-600 border-2 border-gray-600 shadow-md outline-none hover:border-gray-400 focus:border-gray-200 rounded-xl"
+          placeholder="Enter YouTube URL"
+          value={url}
+          onChange={handleOnUrlChange}
+          onKeyPress={handleOnURLEnterClick}
+        />
+        <button
+          type="button"
+          className="inline-block h-8 px-3 py-5 text-xl font-medium leading-[0rem] text-gray-200 bg-teal-600 border-2 border-gray-800 rounded-md hover:border-gray-200"
+          onClick={handleOnEnterClick}
+        >
+          Enter
+        </button>
+      </div>
       <img
         src={imageUrl}
         alt="img"
-        className="max-w-md my-5 shadow-md rounded-xl"
+        className={`max-w-md my-5 shadow-md rounded-xl transition-all ${
+          loadingThumbnail ? 'filter blur-sm' : ''
+        }`}
       />
-      <p className="mb-5 text-xl font-medium text-gray-400">{videoTitle}</p>
-      <select className="h-8 px-3 text-xl text-gray-400 bg-gray-600 border-2 border-gray-600 appearance-none rounded-xl w-80 hover:border-gray-200 focus:outline-none">
-        <option>Choose a resolution</option>
-        {resolutionArray.map((item) => (
-          <option>{item}</option>
-        ))}
-      </select>
+      <p
+        className={`mb-4 text-xl font-medium text-gray-400 transition-all ${
+          loadingThumbnail ? 'filter blur-sm' : ''
+        }`}
+      >
+        {videoTitle}
+      </p>
+
       <button
         type="button"
-        className="py-2 mt-5 text-xl font-medium text-gray-200 bg-teal-600 border-2 border-gray-800 rounded-md px-9 hover:border-gray-200"
+        className="py-2 mt-4 text-xl font-medium text-gray-200 bg-teal-600 border-2 border-gray-800 rounded-md px-9 hover:border-gray-200"
+        onClick={handleOnDownloadClick}
       >
         Download
       </button>
     </div>
   );
 }
-
-export default App;
