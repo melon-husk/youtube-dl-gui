@@ -11,6 +11,7 @@ import { downloadDefaultToPath, getTitleAndThumbnail } from './ytd/ytd';
 // #TODO Implement choosing resolution
 // #TODO Improve function names
 // #TODO Add tests
+// #TODO Make download button tell you when it can't download
 export default function App() {
   const [url, setUrl] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>('./img/hqdefault.webp');
@@ -27,13 +28,13 @@ export default function App() {
       setLoadingThumbnail((prevState) => !prevState);
       getTitleAndThumbnail(url)
         .then((obj) => {
-          // console.log(obj);
+          console.log('obj', obj);
           setImageUrl(obj.thumbnailUrl);
           setVideoTitle(obj.title);
           setLoadingThumbnail(false);
           return undefined;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log('getTitleAndThumbnail error', err));
     }
   };
   const handleOnEnterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -48,7 +49,7 @@ export default function App() {
         setLoadingThumbnail(false);
         return undefined;
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log('getTitleAndThumbnail err', err));
   };
   const handleOnDownloadClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -58,8 +59,10 @@ export default function App() {
     event.preventDefault();
     getFilePath()
       .then((filePaths) => downloadDefaultToPath(filePaths[0], url))
-      .then((output) => console.log(output))
-      .catch((error) => console.log(error));
+      .then((output) => console.log('downloadDefaultToPath output', output))
+      .catch((error) =>
+        console.log('catching error inside getFilePath', error)
+      );
   };
 
   return (
@@ -76,7 +79,7 @@ export default function App() {
         />
         <button
           type="button"
-          className="inline-block h-8 px-3 py-5 text-xl font-medium leading-[0rem] text-gray-200 bg-teal-600 border-2 border-gray-800 rounded-md hover:border-gray-200"
+          className="inline-block h-8 px-3 py-5 text-xl font-medium leading-[0rem] text-gray-200 bg-teal-600 border-2 border-gray-800 rounded-md hover:border-gray-200 hover:text-gray-100 focus:border-gray-200 "
           onClick={handleOnEnterClick}
         >
           Enter
@@ -90,7 +93,7 @@ export default function App() {
         }`}
       />
       <p
-        className={`mb-4 text-xl font-medium text-gray-400 transition-all ${
+        className={`mb-4 text-xl font-medium text-gray-400 transition-all px-4${
           loadingThumbnail ? 'filter blur-sm' : ''
         }`}
       >
