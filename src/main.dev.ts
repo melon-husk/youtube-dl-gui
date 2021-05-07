@@ -11,13 +11,11 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import electronDl from 'electron-dl';
+import constants from './utils/constants';
 import MenuBuilder from './menu';
-
-electronDl();
 
 export default class AppUpdater {
   constructor() {
@@ -117,6 +115,17 @@ const createWindow = async () => {
 /**
  * Add event listeners...
  */
+ipcMain.on(constants.GET_DIRECTORY_PATH, () => {
+  dialog
+    .showOpenDialog({ properties: ['openDirectory'] })
+    .then((response) => {
+      return mainWindow?.webContents.send(
+        constants.SEND_DIRECTORY_PATH,
+        response.filePaths
+      );
+    })
+    .catch((error) => console.log(error));
+});
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
