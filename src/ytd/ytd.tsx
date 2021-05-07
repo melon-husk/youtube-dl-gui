@@ -46,11 +46,18 @@ const downloadDefaultToPath = (path: string, url: string) => {
 
 const getTitleAndThumbnail = (url: string): Promise<TitleAndThumbnail> => {
   return new Promise((resolve, reject) => {
-    const command = `${unixBinPath}${youtubeDlBin} ${url} --get-thumbnail --get-title`;
+    let command = '';
+    const commandLinux = `${unixBinPath}${youtubeDlBin} ${url} --get-thumbnail --get-title`;
+    const commandWindows = `${unixBinPath}${youtubeDlBin} ${url} --get-thumbnail --get-title`;
+    if (process.platform === 'linux') {
+      command = commandLinux;
+    } else if (process.platform === 'win32') {
+      command = commandWindows;
+    }
 
     exec(command, (_error, stdout) => {
       if (stdout === '') {
-        return reject(new Error('Stdout is empty'));
+        return reject(new Error(`Stdout is empty and command is ${command}`));
       }
       const temp = stdout.split('\n');
       return resolve({ title: temp[0], thumbnailUrl: temp[1] });
