@@ -1,7 +1,8 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Fast Refresh for rapid application development",
+  "name": "youtube-dl-gui",
+  "productName": "Youtube-dl GUI",
+  "description": "GUI client for Youtube-dl",
+  "version": "0.1.0",
   "scripts": {
     "build": "concurrently \"yarn build:main\" \"yarn build:renderer\"",
     "build:main": "cross-env NODE_ENV=production webpack --config ./.erb/configs/webpack.config.main.prod.babel.js",
@@ -30,8 +31,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "Youtube-dl GUI",
+    "appId": "org.melon-husk.youtube-dl-gui",
     "files": [
       "dist/",
       "node_modules/",
@@ -97,22 +98,9 @@
     "url": "git+https://github.com/melon-husk/youtube-dl-gui"
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Melon Husk",
+    "email": "ujwal5555@gmail.com"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    },
-    {
-      "name": "John Tran",
-      "email": "jptran318@gmail.com",
-      "url": "https://github.com/jooohhn"
-    }
-  ],
   "keywords": [
     "electron",
     "boilerplate",
