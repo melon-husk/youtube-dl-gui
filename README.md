@@ -4,8 +4,8 @@
 First, clone the repo via git and install dependencies:
 
 ```bash
-git clone --depth 1 --single-branch https://github.com/melon-husk/electron-react-tailwind-jit-boilerplate your-project-name
-cd your-project-name
+git clone https://github.com/melon-husk/youtube-dl-gui
+cd youtube-dl-gui
 yarn
 ```
 
