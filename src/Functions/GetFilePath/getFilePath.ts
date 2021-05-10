@@ -10,6 +10,7 @@ const getFilePath = (): Promise<FilePath> => {
     ipcRenderer.on(constants.SEND_DIRECTORY_PATH, (_event, args) => {
       if (args.length === 0) reject(new Error('Directory is empty'));
       resolve(args);
+      ipcRenderer.removeAllListeners(constants.SEND_DIRECTORY_PATH);
     });
   });
 };
