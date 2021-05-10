@@ -1,6 +1,7 @@
 [![Publish](https://github.com/melon-husk/youtube-dl-gui/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/melon-husk/youtube-dl-gui/actions/workflows/publish.yml)
 
 # GUI for Downloading Youtube Videos
+![image](https://user-images.githubusercontent.com/30780724/117656138-9744d680-b1b5-11eb-861d-6f79e1e9c804.png)
 
 ## Install
 
