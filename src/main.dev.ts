@@ -76,8 +76,9 @@ const createWindow = async () => {
       nodeIntegration: true,
     },
   });
-  mainWindow.setMenu(null);
+  mainWindow.setMenuBarVisibility(false); // removes menu
   mainWindow.loadURL(`file://${__dirname}/index.html`);
+  // mainWindow.webContents.openDevTools(); // To open devtools during prod
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
   mainWindow.webContents.on('did-finish-load', () => {
