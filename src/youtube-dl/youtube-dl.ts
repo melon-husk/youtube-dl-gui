@@ -71,6 +71,7 @@ const downloadVideo = async (
     const downloadedMinutes = (Date.now() - startTime) / 1000 / 60;
     const estimatedDownloadTime =
       downloadedMinutes / percent - downloadedMinutes;
+
     setDownloadProgress(`${(percent * 100).toFixed(0)}%`);
     setDownloaded(
       `${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(
@@ -79,7 +80,11 @@ const downloadVideo = async (
         1024
       ).toFixed(2)}MB`
     );
-    setEstimatedTime(`${estimatedDownloadTime.toFixed(2)} minutes`);
+    setEstimatedTime(
+      `${estimatedDownloadTime.toFixed(0)} min ${(
+        estimatedDownloadTime * 60
+      ).toFixed(0)} sec remaining`
+    );
   });
 };
 
