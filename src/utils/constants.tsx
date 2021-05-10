@@ -1,8 +1,0 @@
-const constant = {
-  GET_DIRECTORY_PATH: 'GET_DIRECTORY_PATH',
-  SEND_DIRECTORY_PATH: 'SEND_DIRECTORY_PATH',
-  GET_APP_PATH: 'GET_APP_PATH',
-  SEND_APP_PATH: 'SEND_APP_PATH',
-};
-
-export default constant;

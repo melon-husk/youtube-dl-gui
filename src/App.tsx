@@ -1,112 +1,103 @@
 /* eslint-disable no-console */
 import './App.global.css';
 import React, { useState } from 'react';
-import getFilePath from './GetFilePath/getFilePath';
-import { downloadDefaultToPath, getTitleAndThumbnail } from './ytd/ytd';
+import { videoFormat } from 'ytdl-core';
+import Button from './Components/Button';
+import UrlInputBar from './Components/UrlInputBar';
+import Thumbnail from './Components/Thumbnail';
+import VideoTitle from './Components/VideoTitle';
+import ChooseResolution from './Components/ChooseResolution';
+import DownloadProgressBar from './Components/DownloadProgressBar';
+import {
+  handleOnDownloadClick,
+  handleOnEnterClick,
+  handleOnUrlChange,
+  handleOnURLEnterClick,
+  selectResolution,
+} from './Functions/functions';
 
-// #TODO Extract long Class names
-// #TODO Extract functions into their own files
-// #TODO Download Windows youtube-dl binary and support for it
-// #TODO Implement Download progress bar
-// #TODO Implement choosing resolution
 // #TODO Improve function names
 // #TODO Add tests
-// #TODO Make download button tell you when it can't download
+
 export default function App() {
   const [url, setUrl] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>('./img/hqdefault.webp');
-  // const [resolutionArray, setResolutionArray] = useState<string[]>([]);
+  const [resolutionArray, setResolutionArray] = useState<videoFormat[]>([]);
+  const [currentResolution, setCurrentResolution] = useState<videoFormat>();
   const [videoTitle, setVideoTitle] = useState<string>('');
   const [loadingThumbnail, setLoadingThumbnail] = useState<boolean>(false);
-  const handleOnUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(event.currentTarget.value);
-  };
-  const handleOnURLEnterClick = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === 'Enter') {
-      setLoadingThumbnail((prevState) => !prevState);
-      getTitleAndThumbnail(url)
-        .then((obj) => {
-          console.log('obj', obj);
-          setImageUrl(obj.thumbnailUrl);
-          setVideoTitle(obj.title);
-          setLoadingThumbnail(false);
-          return undefined;
-        })
-        .catch((err) => console.log('getTitleAndThumbnail error', err));
-    }
-  };
-  const handleOnEnterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    if (!url) return;
-    setLoadingThumbnail((prevState) => !prevState);
-    getTitleAndThumbnail(url)
-      .then((obj) => {
-        // console.log(obj);
-        setImageUrl(obj.thumbnailUrl);
-        setVideoTitle(obj.title);
-        setLoadingThumbnail(false);
-        return undefined;
-      })
-      .catch((err) => console.log('getTitleAndThumbnail err', err));
-  };
-  const handleOnDownloadClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    if (!url) return;
-    if (loadingThumbnail) return;
-    event.preventDefault();
-    getFilePath()
-      .then((filePaths) => downloadDefaultToPath(filePaths[0], url))
-      .then((output) => console.log('downloadDefaultToPath output', output))
-      .catch((error) =>
-        console.log('catching error inside getFilePath', error)
-      );
-  };
-
+  const [validUrl, setValidUrl] = useState<boolean>(false);
+  const [downloadProgress, setDownloadProgress] = useState<string>('0%');
+  const [downloaded, setDownloaded] = useState<string>('');
+  const [estimatedTime, setEstimatedTime] = useState<string>('');
   return (
     <div className="flex flex-col items-center justify-center w-screen pt-5 ">
       <div className="flex justify-center w-full mb-5">
-        <input
-          type="text"
-          name="youtubeURL"
-          className="w-3/4 h-8 px-3 py-5 mr-2 text-xl text-gray-100 placeholder-gray-400 bg-gray-600 border-2 border-gray-600 shadow-md outline-none hover:border-gray-400 focus:border-gray-200 rounded-xl"
+        <UrlInputBar
+          url={url}
+          validUrl={validUrl}
           placeholder="Enter YouTube URL"
-          value={url}
-          onChange={handleOnUrlChange}
-          onKeyPress={handleOnURLEnterClick}
+          onChange={(event) => handleOnUrlChange(event, setUrl, setValidUrl)}
+          onKeyPress={(event) =>
+            handleOnURLEnterClick(
+              event,
+              url,
+              validUrl,
+              setLoadingThumbnail,
+              setImageUrl,
+              setVideoTitle,
+              setResolutionArray,
+              setDownloaded,
+              setEstimatedTime
+            )
+          }
         />
-        <button
-          type="button"
-          className="inline-block h-8 px-3 py-5 text-xl font-medium leading-[0rem] text-gray-200 bg-teal-600 border-2 border-gray-800 rounded-md hover:border-gray-200 hover:text-gray-100 focus:border-gray-200 "
-          onClick={handleOnEnterClick}
-        >
-          Enter
-        </button>
+        <Button
+          buttonText="Enter"
+          onClick={(event) =>
+            handleOnEnterClick(
+              event,
+              url,
+              validUrl,
+              setLoadingThumbnail,
+              setImageUrl,
+              setVideoTitle,
+              setResolutionArray,
+              setDownloaded,
+              setEstimatedTime
+            )
+          }
+        />
       </div>
-      <img
-        src={imageUrl}
-        alt="img"
-        className={`max-w-md my-5 shadow-md rounded-xl transition-all ${
-          loadingThumbnail ? 'filter blur-sm' : ''
-        }`}
+      <Thumbnail imageUrl={imageUrl} loadingThumbnail={loadingThumbnail} />
+      <VideoTitle loadingThumbnail={loadingThumbnail} videoTitle={videoTitle} />
+      <ChooseResolution
+        onChange={(event) =>
+          selectResolution(event, setCurrentResolution, resolutionArray)
+        }
+        resolutionArray={resolutionArray}
       />
-      <p
-        className={`mb-4 text-xl font-medium text-gray-400 transition-all px-4${
-          loadingThumbnail ? 'filter blur-sm' : ''
-        }`}
-      >
-        {videoTitle}
-      </p>
-
-      <button
-        type="button"
-        className="py-2 mt-4 text-xl font-medium text-gray-200 bg-teal-600 border-2 border-gray-800 rounded-md px-9 hover:border-gray-200"
-        onClick={handleOnDownloadClick}
-      >
-        Download
-      </button>
+      <Button
+        buttonText="Download"
+        onClick={(event) =>
+          handleOnDownloadClick(
+            event,
+            url,
+            validUrl,
+            loadingThumbnail,
+            currentResolution,
+            setDownloadProgress,
+            setDownloaded,
+            setEstimatedTime
+          )
+        }
+        className="mt-5"
+      />
+      <DownloadProgressBar
+        downloadProgress={downloadProgress}
+        downloaded={downloaded}
+        estimatedTime={estimatedTime}
+      />
     </div>
   );
 }

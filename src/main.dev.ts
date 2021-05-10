@@ -15,7 +15,6 @@ import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import constants from './utils/constants';
-import MenuBuilder from './menu';
 
 export default class AppUpdater {
   constructor() {
@@ -77,8 +76,9 @@ const createWindow = async () => {
       nodeIntegration: true,
     },
   });
-
+  mainWindow.setMenuBarVisibility(false); // removes menu
   mainWindow.loadURL(`file://${__dirname}/index.html`);
+  // mainWindow.webContents.openDevTools(); // To open devtools during prod
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
   mainWindow.webContents.on('did-finish-load', () => {
@@ -96,9 +96,6 @@ const createWindow = async () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
 
   // Open urls in the user's browser
   mainWindow.webContents.on('new-window', (event, url) => {
