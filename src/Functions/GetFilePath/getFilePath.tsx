@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import constants from '../utils/constants';
+import constants from '../../utils/constants';
 // const electron = require('electron');
 
 type FilePath = [string];
