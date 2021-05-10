@@ -27,7 +27,7 @@ const DownloadProgressBar = ({
           </span>
         </div>
       </div>
-      <p className="text-xl font-medium text-gray-300">
+      <p className="my-1 text-xl font-medium text-gray-300">
         Downloaded: {downloaded}
       </p>
       <p className="text-xl font-medium text-gray-300">
