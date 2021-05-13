@@ -87,14 +87,7 @@
       "output": "release"
     },
     "extraResources": [
-      "./assets/**",
-      {
-        "from": "src/ytd/bin",
-        "to": "bin",
-        "filter": [
-          "**/*"
-        ]
-      }
+      "./assets/**"
     ],
     "publish": {
       "provider": "github",
@@ -104,7 +97,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/melon-husk/youtube-dl-gui"
+    "url": "https://github.com/melon-husk/youtube-dl-gui"
   },
   "author": {
     "name": "Melon Husk",
