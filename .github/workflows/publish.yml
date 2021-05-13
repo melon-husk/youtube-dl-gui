@@ -49,4 +49,4 @@ jobs:
           # This is used for uploading release assets to github
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn postinstall && yarn build && yarn electron-builder --publish always --linux
+          yarn postinstall && yarn build && yarn electron-builder --publish always --linux --win
