@@ -16,7 +16,7 @@
   "dependencies": {
     "sanitize-filename": "^1.6.3",
     "uuid": "^8.3.2",
-    "ytdl-core": "^4.7.0"
+    "ytdl-core": "^4.8.0"
   },
   "devDependencies": {
     "@types/uuid": "^8.3.0"
