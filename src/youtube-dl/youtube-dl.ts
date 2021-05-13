@@ -9,47 +9,6 @@ type Info = {
   thumbnailUrl: string;
 };
 
-// class YoutubeDl {
-//   url: string;
-
-//   videoInfo!: videoInfo;
-
-//   constructor(url: string) {
-//     this.url = url;
-//   }
-
-//   get info(): Promise<Info> {
-//     return new Promise((resolve, reject) => {
-//       ytdl
-//         .getInfo(this.url)
-//         .then((info) => {
-//           this.videoInfo = info;
-//           const resolutions = ytdl.filterFormats(info.formats, 'videoandaudio');
-//           const { title } = info.videoDetails;
-//           const thumbnailUrl = info.videoDetails.thumbnails[3].url;
-//           return resolve({ resolutions, title, thumbnailUrl });
-//         })
-//         .catch(reject);
-//     });
-//   }
-
-//   downloadVideo(
-//     vidF: videoFormat,
-//     path: string,
-//     func: React.Dispatch<React.SetStateAction<string>>
-//   ): void {
-//     const info = this.videoInfo;
-//     const fileName = sanitize(info.videoDetails.title);
-//     const video = ytdl(this.url, { format: vidF });
-//     // video.on('info', (...args) => console.log(args));
-//     video.pipe(fs.createWriteStream(`${path}\\${fileName}.mp4`));
-//     video.on('progress', (_chunkLength, downloaded, total) => {
-//       const percent = downloaded / total;
-//       func(`${(percent * 100).toFixed(0)}%`);
-//     });
-//   }
-// }
-
 const downloadVideo = async (
   vidF: videoFormat,
   url: string,
@@ -62,7 +21,7 @@ const downloadVideo = async (
   const fileName = sanitize(info.videoDetails.title);
   const video = ytdl(url, { format: vidF });
   let startTime: number;
-  video.pipe(fs.createWriteStream(`${path}\\${fileName}.mp4`));
+  video.pipe(fs.createWriteStream(`${path}${fileName}.mp4`));
   video.once('response', () => {
     startTime = Date.now();
   });

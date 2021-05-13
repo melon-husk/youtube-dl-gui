@@ -81,11 +81,11 @@ const handleOnDownloadClick = (
   setDownloadProgress('0%');
   if (currentResolution !== undefined) {
     getFilePath()
-      .then((filePaths) =>
+      .then((filePath) =>
         downloadVideo(
           currentResolution,
           url,
-          filePaths[0],
+          filePath,
           setDownloadProgress,
           setDownloaded,
           setEstimatedTime
@@ -103,8 +103,9 @@ const selectResolution = (
 ) => {
   setCurrentResolution(
     resolutionArray.find(
-      (reso) =>
-        `${reso.qualityLabel} ${reso.quality}` === event.currentTarget.value
+      (resolution) =>
+        `${resolution.qualityLabel} ${resolution.quality}` ===
+        event.currentTarget.value
     )
   );
 };
