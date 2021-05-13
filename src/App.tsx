@@ -75,6 +75,7 @@ export default function App() {
         onChange={(event) =>
           selectResolution(event, setCurrentResolution, resolutionArray)
         }
+        value={currentResolution}
         resolutionArray={resolutionArray}
       />
       <Button
