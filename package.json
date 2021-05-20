@@ -14,7 +14,8 @@
     "start": "node -r @babel/register ./.erb/scripts/CheckPortInUse.js && yarn start:renderer",
     "start:main": "cross-env NODE_ENV=development electron -r ./.erb/scripts/BabelRegister ./src/main.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config ./.erb/configs/webpack.config.renderer.dev.babel.js",
-    "test": "jest"
+    "test": "jest",
+    "package-linux": "rm -rf ./app/node_modules && yarn build && electron-builder build --linux"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -33,6 +34,9 @@
   "build": {
     "productName": "Youtube-dl GUI",
     "appId": "org.melon-husk.youtube-dl-gui",
+    "asarUnpack": [
+      "**/app/node_modules/ffmpeg-static/*"
+    ],
     "files": [
       "dist/",
       "node_modules/",
@@ -79,7 +83,8 @@
     "linux": {
       "target": [
         "AppImage",
-        "deb"
+        "deb",
+        "tar.gz"
       ],
       "category": "Development"
     },
@@ -169,11 +174,12 @@
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/history": "4.7.6",
     "@types/jest": "^26.0.15",
-    "@types/node": "14.14.10",
+    "@types/node": "^14.14.10",
     "@types/react": "^16.9.44",
     "@types/react-dom": "^16.9.9",
     "@types/react-router-dom": "^5.1.6",
     "@types/react-test-renderer": "^16.9.3",
+    "@types/regenerator-runtime": "^0.13.0",
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
@@ -251,7 +257,9 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "regenerator-runtime": "^0.13.5",
-    "source-map-support": "^0.5.19"
+    "sanitize-filename": "^1.6.3",
+    "source-map-support": "^0.5.19",
+    "uuid": "^8.3.2"
   },
   "devEngines": {
     "node": ">=10.x",

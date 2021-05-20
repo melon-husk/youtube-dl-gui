@@ -103,9 +103,7 @@ const selectResolution = (
 ) => {
   setCurrentResolution(
     resolutionArray.find(
-      (resolution) =>
-        `${resolution.qualityLabel} ${resolution.quality}` ===
-        event.currentTarget.value
+      (resolution) => `${resolution.qualityLabel}` === event.currentTarget.value
     )
   );
 };

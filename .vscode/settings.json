@@ -25,5 +25,6 @@
     "yarn.lock": true,
     "*.{css,sass,scss}.d.ts": true
   },
-  "cSpell.words": ["videoandaudio"]
+  "cSpell.words": ["videoandaudio"],
+  "jest.jestCommandLine": "yarn test"
 }
