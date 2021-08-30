@@ -1,7 +1,7 @@
 {
   "name": "youtube-dl-gui",
   "productName": "Youtube-dl GUI",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "GUI client for Youtube-dl",
   "main": "./main.prod.js",
   "author": {
