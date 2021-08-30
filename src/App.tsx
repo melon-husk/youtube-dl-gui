@@ -15,6 +15,7 @@ import {
   handleOnURLEnterClick,
   selectResolution,
 } from './Functions/functions';
+import openFolderByPath from './Functions/OpenFolderByPath/openFolderByPath';
 
 // #TODO Improve function names
 // #TODO Add tests
@@ -30,6 +31,7 @@ export default function App() {
   const [downloadProgress, setDownloadProgress] = useState<string>('0%');
   const [downloaded, setDownloaded] = useState<string>('');
   const [estimatedTime, setEstimatedTime] = useState<string>('');
+  const [downloadFolderPath, setDownloadFolderPath] = useState<string>('');
   return (
     <div className="flex flex-col items-center justify-center w-screen pt-5 ">
       <div className="flex justify-center w-full mb-5">
@@ -78,22 +80,32 @@ export default function App() {
         value={currentResolution}
         resolutionArray={resolutionArray}
       />
-      <Button
-        buttonText="Download"
-        onClick={(event) =>
-          handleOnDownloadClick(
-            event,
-            url,
-            validUrl,
-            loadingThumbnail,
-            currentResolution,
-            setDownloadProgress,
-            setDownloaded,
-            setEstimatedTime
-          )
-        }
-        className="mt-5"
-      />
+      <div>
+        <Button
+          buttonText="Download"
+          onClick={(event) =>
+            handleOnDownloadClick(
+              event,
+              url,
+              validUrl,
+              loadingThumbnail,
+              currentResolution,
+              setDownloadProgress,
+              setDownloaded,
+              setEstimatedTime,
+              setDownloadFolderPath
+            )
+          }
+          className="mt-5"
+        />
+        <Button
+          buttonText="Open Folder"
+          onClick={(event) => {
+            openFolderByPath(downloadFolderPath);
+          }}
+          className="mt-5 ml-1"
+        />
+      </div>
       <DownloadProgressBar
         downloadProgress={downloadProgress}
         downloaded={downloaded}

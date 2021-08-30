@@ -126,7 +126,12 @@ ipcMain.on(constants.GET_DIRECTORY_PATH, () => {
 ipcMain.on(constants.GET_APP_PATH, () => {
   mainWindow?.webContents.send(constants.SEND_APP_PATH, app.getAppPath());
 });
-
+ipcMain.handle(
+  constants.OPEN_VIDEO_DOWNLOAD_FOLDER,
+  async (_event, folderPath) => {
+    shell.openPath(folderPath);
+  }
+);
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed

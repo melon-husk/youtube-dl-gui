@@ -73,7 +73,8 @@ const handleOnDownloadClick = (
   currentResolution: videoFormat | undefined,
   setDownloadProgress: React.Dispatch<React.SetStateAction<string>>,
   setDownloaded: React.Dispatch<React.SetStateAction<string>>,
-  setEstimatedTime: React.Dispatch<React.SetStateAction<string>>
+  setEstimatedTime: React.Dispatch<React.SetStateAction<string>>,
+  setDownloadFolderPath: React.Dispatch<React.SetStateAction<string>>
 ) => {
   if (!validUrl) return;
   if (loadingThumbnail) return;
@@ -81,7 +82,7 @@ const handleOnDownloadClick = (
   setDownloadProgress('0%');
   if (currentResolution !== undefined) {
     getFilePath()
-      .then((filePath) =>
+      .then((filePath) => {
         downloadVideo(
           currentResolution,
           url,
@@ -89,8 +90,10 @@ const handleOnDownloadClick = (
           setDownloadProgress,
           setDownloaded,
           setEstimatedTime
-        )
-      )
+        );
+        setDownloadFolderPath(filePath);
+        return 'success';
+      })
       .catch((error) => console.log('getFilePath error', error));
   }
 };
