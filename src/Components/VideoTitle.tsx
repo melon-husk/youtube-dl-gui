@@ -1,12 +1,14 @@
 import React from 'react';
+import { useAppSelector } from '../data/hooks';
+import { selectLoadingThumbnail, selectVideoTitle } from '../data/slices/app';
 
 interface Props {
-  loadingThumbnail: boolean;
-  videoTitle: string;
   className?: string;
 }
 
-const VideoTitle = ({ loadingThumbnail, videoTitle, className }: Props) => {
+const VideoTitle = ({ className }: Props) => {
+  const loadingThumbnail = useAppSelector(selectLoadingThumbnail);
+  const videoTitle = useAppSelector(selectVideoTitle);
   return (
     <p
       className={`mb-4 text-xl font-medium text-gray-400 transition-all px-4${

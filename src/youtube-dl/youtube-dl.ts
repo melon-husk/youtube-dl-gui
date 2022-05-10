@@ -5,15 +5,14 @@ import ffmpeg from 'ffmpeg-static';
 import childProcess from 'child_process';
 // import ffmpeg from 'ffmpeg-static-electron';
 
-type Info = {
+interface Info {
   resolutions: videoFormat[];
   title: string;
   thumbnailUrl: string;
-};
+}
 
 const getInfo = (url: string): Promise<Info> => {
   return new Promise((resolve, reject) => {
-    // console.log(ffmpeg);
     ytdl
       .getInfo(url)
       .then((info) => {
@@ -36,9 +35,9 @@ const downloadVideo = async (
   vidF: videoFormat,
   url: string,
   path: string,
-  setDownloadProgress: React.Dispatch<React.SetStateAction<string>>,
-  setDownloaded: React.Dispatch<React.SetStateAction<string>>,
-  setEstimatedTime: React.Dispatch<React.SetStateAction<string>>
+  setDownloadProgress: (progress: string) => void,
+  setDownloaded: (downloaded: string) => void,
+  setEstimatedTime: (estimatedTime: string) => void
 ) => {
   // console.log('path', path);
   const info = await ytdl.getInfo(url);

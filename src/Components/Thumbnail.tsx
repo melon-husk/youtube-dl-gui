@@ -1,12 +1,15 @@
 import React from 'react';
+import { useAppSelector } from '../data/hooks';
+import { selectImageUrl, selectLoadingThumbnail } from '../data/slices/app';
 
 interface Props {
-  imageUrl: string;
   className?: string;
-  loadingThumbnail: boolean;
 }
 
-const Thumbnail = ({ imageUrl, loadingThumbnail, className }: Props) => {
+const Thumbnail = ({ className }: Props) => {
+  const imageUrl = useAppSelector(selectImageUrl);
+  const loadingThumbnail = useAppSelector(selectLoadingThumbnail);
+
   return (
     <img
       src={imageUrl}

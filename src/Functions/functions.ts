@@ -6,7 +6,7 @@ import { downloadVideo, getInfo } from '../youtube-dl/youtube-dl';
 
 const handleOnUrlChange = (
   event: React.ChangeEvent<HTMLInputElement>,
-  setUrl: (value: React.SetStateAction<string>) => void,
+  setUrl: (value: string) => void,
   setValidUrl: (value: React.SetStateAction<boolean>) => void
 ) => {
   setUrl(event.currentTarget.value);

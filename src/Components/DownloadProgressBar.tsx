@@ -1,18 +1,19 @@
 import React from 'react';
+import { useAppSelector } from '../data/hooks';
+import {
+  selectDownloaded,
+  selectDownloadProgress,
+  selectEstimatedTime,
+} from '../data/slices/app';
 
 interface Props {
   className?: string;
-  downloadProgress: string;
-  downloaded: string;
-  estimatedTime: string;
 }
 
-const DownloadProgressBar = ({
-  downloadProgress,
-  downloaded,
-  estimatedTime,
-  className,
-}: Props) => {
+const DownloadProgressBar = ({ className }: Props) => {
+  const downloadProgress = useAppSelector(selectDownloadProgress);
+  const downloaded = useAppSelector(selectDownloaded);
+  const estimatedTime = useAppSelector(selectEstimatedTime);
   return (
     <>
       <div
